@@ -71,22 +71,57 @@ let generateLottery() =
     |> List.sort
     |> List.map ( fun x -> WhiteBall x)
 
-let lotteryPick =
-    {
-        WhiteBalls = generateLottery()
-        PowerBall = Powerball(Random.Shared.Next(1,27))
-    }
 
-let drawingResults =
-    {
-        WhiteBalls = generateLottery()
-        PowerBall = Powerball(Random.Shared.Next(1,27))
-    }
-
-let findCorrectBalls lotteryPick drawingResults  =
+let findCorrectWhiteBalls lotteryPick drawingResult  =
     Set.intersect 
         (Set.ofList lotteryPick.WhiteBalls) 
-        (Set.ofList drawingResults.WhiteBalls) 
+        (Set.ofList drawingResult.WhiteBalls) 
     |> Set.toList
 
-findCorrectBalls lotteryPick drawingResults
+let checkPowerball lotteryPick drawingResult=
+    if lotteryPick.PowerBall = drawingResult.PowerBall then
+        Some(lotteryPick.PowerBall)
+    else
+        None
+
+let scoreLotteryPick whiteBalls powerball grandprize  =
+    let numOfWhiteBalls = whiteBalls |> List.length
+    match (numOfWhiteBalls,powerball)  with
+    | 5,Some(_) -> grandprize
+    | 5,None -> 1_000_000
+    | 4,Some(_) -> 50_000
+    | 4,None -> 100
+    | 3,Some(_) -> 100
+    | 3,None -> 7
+    | 2,Some(_) -> 7
+    | 2,None -> 0
+    | 1,Some(_) -> 4
+    | 1,None -> 0
+    | 0,Some(_) -> 4
+    | 0,None -> 0
+    | _ -> failwithf $"I have not found this PowerBall Cases yet: {numOfWhiteBalls}; {powerball}"
+
+let scorePowerBall lotteryPick drawingResult grandprize = 
+    let whiteBalls = findCorrectWhiteBalls lotteryPick drawingResult
+    let powerBall = checkPowerball lotteryPick drawingResult
+    scoreLotteryPick whiteBalls powerBall grandprize
+
+let lotteryPick =
+    {
+        WhiteBalls = [WhiteBall 14; WhiteBall 33; WhiteBall 43; WhiteBall 60; WhiteBall 67]
+        PowerBall = Powerball 7
+    }
+
+let drawingResult =
+    {
+        WhiteBalls = generateLottery()
+        PowerBall = Powerball(Random.Shared.Next(1,27))
+    }
+
+scorePowerBall lotteryPick drawingResult 20_000_000
+
+(*
+    Create a function that takes in a lottery pick
+    and Counts how many numbers are correct in the
+    ball picks.
+*)
