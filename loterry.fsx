@@ -102,9 +102,9 @@ let scoreLotteryPick whiteBalls powerball grandprize  =
     | _ -> failwithf $"I have not found this PowerBall Cases yet: {numOfWhiteBalls}; {powerball}"
 
 let scorePowerBall lotteryPick drawingResult grandprize = 
-    let whiteBalls = findCorrectWhiteBalls lotteryPick drawingResult
-    let powerBall = checkPowerball lotteryPick drawingResult
-    scoreLotteryPick whiteBalls powerBall grandprize
+    let matchingwhiteBalls = findCorrectWhiteBalls lotteryPick drawingResult
+    let matchingpowerBall = checkPowerball lotteryPick drawingResult
+    scoreLotteryPick matchingwhiteBalls matchingpowerBall grandprize
 
 let lotteryPick =
     {
@@ -112,13 +112,42 @@ let lotteryPick =
         PowerBall = Powerball 7
     }
 
-let drawingResult =
+let drawPowerballs() =
     {
         WhiteBalls = generateLottery()
         PowerBall = Powerball(Random.Shared.Next(1,27))
     }
 
-scorePowerBall lotteryPick drawingResult 20_000_000
+// scorePowerBall lotteryPick (drawingPowerballs()) 20_000_000
+
+
+(*
+    14 33 43 60 67 7
+*)
+
+let mutable lotteryTickets: int = 0
+let mutable profit: int = 0
+let mutable loss: int = 0
+let mutable ticketsBought: int = 0
+let mutable x = 0
+let mutable ammountWon = 0
+
+let grandprize = 1_000_000_000
+
+while ammountWon <> grandprize do
+    let drawingResults = drawPowerballs()
+    let matchingwhiteBalls = findCorrectWhiteBalls lotteryPick drawingResults
+    let matchingpowerBall = checkPowerball lotteryPick drawingResults
+    ammountWon <- scoreLotteryPick matchingwhiteBalls matchingpowerBall grandprize
+    lotteryTickets <- lotteryTickets + 1
+    loss <- loss + 2
+    profit <- profit + ammountWon
+    x <- x + 1
+
+printfn $"Tickets Purchased: ${lotteryTickets}"
+printfn $"Profit: ${profit}"
+printfn $"Loss: ${loss}"
+printfn $"Net Profit: ${profit - loss}"
 
 (*
     Create a function that takes in a lottery pick
