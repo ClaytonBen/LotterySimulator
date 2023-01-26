@@ -1,5 +1,10 @@
-open System
-
+(*
+    Simmulating:
+    
+    How many drawings does it take for me to win the jackpot?
+    What is the ROI?
+*)
+ 
 (* 
     Assumption:
 
@@ -24,16 +29,11 @@ open System
     Red Balls range from (1-26)
 *)
 
-(*
-    Simmulating:
-    
-    How many drawings does it take for me to win the jackpot?
-    What is the ROI?
-*)
 
 (*
     Generating random values with the new random functionality.
 *)
+open System
 
 Random.Shared.Next(1, 70)// Generates numbers 1 to 69
 Random.Shared.Next(1,27) // Generates numbers 1 to 26
@@ -41,12 +41,11 @@ Random.Shared.Next(1,27) // Generates numbers 1 to 26
 type WhiteBall = WhiteBall of int
 type PowerBall = Powerball of int
 
+[<Struct>]
 type LotteryCombination = {
     WhiteBalls: WhiteBall list
     PowerBall: PowerBall
 }
-
-open System
 
 let genUnique picks = 
     let mutable next = Random.Shared.Next(1, 70)
@@ -120,6 +119,18 @@ let drawPowerballs() =
 
 // scorePowerBall lotteryPick (drawingPowerballs()) 20_000_000
 
+let addCommas (num: int) = 
+    let numString = num.ToString()
+    let reversed = numString.ToCharArray() |> Array.rev
+    let chunks = reversed |> Array.chunkBySize 3
+    chunks
+    |> Array.map Array.rev
+    |> Array.rev
+    |> Array.map ( fun x -> 
+        x 
+        |> Array.map string 
+        |> String.concat "")
+    |> String.concat ","
 
 (*
     14 33 43 60 67 7
@@ -128,13 +139,13 @@ let drawPowerballs() =
 let mutable lotteryTickets: int = 0
 let mutable profit: int = 0
 let mutable loss: int = 0
-let mutable ticketsBought: int = 0
 let mutable x = 0
 let mutable ammountWon = 0
 
 let grandprize = 1_000_000_000
 
-while ammountWon <> grandprize do
+
+while ammountWon <> 1_000_000 do
     let drawingResults = drawPowerballs()
     let matchingwhiteBalls = findCorrectWhiteBalls lotteryPick drawingResults
     let matchingpowerBall = checkPowerball lotteryPick drawingResults
@@ -142,12 +153,16 @@ while ammountWon <> grandprize do
     lotteryTickets <- lotteryTickets + 1
     loss <- loss + 2
     profit <- profit + ammountWon
+    if (x % 100_000) = 0 then 
+        printfn "Number of Draws: %s Net Profit: $%s"(x|>addCommas)((profit-loss)|>addCommas)
     x <- x + 1
 
-printfn $"Tickets Purchased: ${lotteryTickets}"
-printfn $"Profit: ${profit}"
-printfn $"Loss: ${loss}"
-printfn $"Net Profit: ${profit - loss}"
+
+printfn $"Tickets Purchased: {lotteryTickets |>addCommas}"
+printfn $"Profit: ${profit|> addCommas}"
+printfn $"Loss: ${loss|> addCommas}"
+printfn $"Net Profit: ${(profit - loss) |>addCommas}"
+
 
 (*
     Create a function that takes in a lottery pick
