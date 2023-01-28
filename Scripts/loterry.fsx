@@ -1,5 +1,5 @@
 (*
-    Simmulating:
+    Simulating:
     
     How many drawings does it take for me to win the jackpot?
     What is the ROI?
@@ -43,77 +43,60 @@ type PowerBall = Powerball of int
 
 [<Struct>]
 type LotteryCombination = {
-    WhiteBalls: WhiteBall list
+    WhiteBalls: WhiteBall Set
     PowerBall: PowerBall
 }
 
-let genUnique picks = 
-    let mutable next = Random.Shared.Next(1, 70)
-    while List.contains next picks do
-        next <- Random.Shared.Next(1, 70)
-    next
+let generateWhiteBalls n =
+    let rec generateRandomNumbers' n set =
+        if set |> Set.count = n then set
+        else 
+            generateRandomNumbers' n (Set.add (WhiteBall (Random.Shared.Next(1, 70))) set)
+    generateRandomNumbers' n Set.empty
 
-let generator state = 
-    match state with
-    | [] -> 
-        let next = Random.Shared.Next(1, 70)
-        Some (next, [next])
-    | [_;_;_;_;_] -> 
-        None
-    | picks -> 
-        let next = genUnique picks
-        Some (next, next :: picks)
+generateWhiteBalls 5
 
-let generateLottery() = 
-    []
-    |> List.unfold generator
-    |> List.sort
-    |> List.map ( fun x -> WhiteBall x)
-
-
+// This will not need to be here.
+// When I use a set I don't need to go back to lists.
 let findCorrectWhiteBalls lotteryPick drawingResult  =
-    Set.intersect 
-        (Set.ofList lotteryPick.WhiteBalls) 
-        (Set.ofList drawingResult.WhiteBalls) 
-    |> Set.toList
+    Set.intersect lotteryPick.WhiteBalls drawingResult.WhiteBalls
 
+// Let lotteryP
 let checkPowerball lotteryPick drawingResult=
-    if lotteryPick.PowerBall = drawingResult.PowerBall then
-        Some(lotteryPick.PowerBall)
-    else
-        None
+    lotteryPick.PowerBall = drawingResult.PowerBall
 
+// Change to true false
 let scoreLotteryPick whiteBalls powerball grandprize  =
-    let numOfWhiteBalls = whiteBalls |> List.length
+    let numOfWhiteBalls = whiteBalls |> Set.count
     match (numOfWhiteBalls,powerball)  with
-    | 5,Some(_) -> grandprize
-    | 5,None -> 1_000_000
-    | 4,Some(_) -> 50_000
-    | 4,None -> 100
-    | 3,Some(_) -> 100
-    | 3,None -> 7
-    | 2,Some(_) -> 7
-    | 2,None -> 0
-    | 1,Some(_) -> 4
-    | 1,None -> 0
-    | 0,Some(_) -> 4
-    | 0,None -> 0
+    | 5,true    -> grandprize
+    | 5,false   -> 1_000_000
+    | 4,true    -> 50_000
+    | 4,false   -> 100
+    | 3,true    -> 100
+    | 3,false   -> 7
+    | 2,true    -> 7
+    | 2,false   -> 0
+    | 1,true    -> 4
+    | 1,false   -> 0
+    | 0,true    -> 4
+    | 0,false   -> 0
     | _ -> failwithf $"I have not found this PowerBall Cases yet: {numOfWhiteBalls}; {powerball}"
 
-let scorePowerBall lotteryPick drawingResult grandprize = 
-    let matchingwhiteBalls = findCorrectWhiteBalls lotteryPick drawingResult
-    let matchingpowerBall = checkPowerball lotteryPick drawingResult
-    scoreLotteryPick matchingwhiteBalls matchingpowerBall grandprize
+// let scorePowerBall lotteryPick drawingResult grandprize = 
+//     let matchingwhiteBalls = findCorrectWhiteBalls lotteryPick drawingResult
+//     let matchingpowerBall = checkPowerball lotteryPick drawingResult
+//     scoreLotteryPick matchingwhiteBalls matchingpowerBall grandprize
 
 let lotteryPick =
     {
-        WhiteBalls = [WhiteBall 14; WhiteBall 33; WhiteBall 43; WhiteBall 60; WhiteBall 67]
+        WhiteBalls = Set.ofList [WhiteBall 14; WhiteBall 33; WhiteBall 43; WhiteBall 60; WhiteBall 67]
         PowerBall = Powerball 7
     }
 
-let drawPowerballs() =
+let drawLottery() =
     {
-        WhiteBalls = generateLottery()
+        WhiteBalls = generateWhiteBalls 5
         PowerBall = Powerball(Random.Shared.Next(1,27))
     }
 
@@ -144,16 +127,16 @@ let mutable ammountWon = 0
 
 let grandprize = 1_000_000_000
 
-
-while ammountWon <> 1_000_000 do
-    let drawingResults = drawPowerballs()
+// PowerBall hit While not powerball hit do. Set that to true when I hit powerball
+while ammountWon <> grandprize do
+    let drawingResults = drawLottery()
     let matchingwhiteBalls = findCorrectWhiteBalls lotteryPick drawingResults
     let matchingpowerBall = checkPowerball lotteryPick drawingResults
     ammountWon <- scoreLotteryPick matchingwhiteBalls matchingpowerBall grandprize
     lotteryTickets <- lotteryTickets + 1
     loss <- loss + 2
     profit <- profit + ammountWon
-    if (x % 100_000) = 0 then 
+    if (x % 1_000_000) = 0 then 
         printfn "Number of Draws: %s Net Profit: $%s"(x|>addCommas)((profit-loss)|>addCommas)
     x <- x + 1
 
