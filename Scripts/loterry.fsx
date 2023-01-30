@@ -118,11 +118,19 @@ let addCommas (num: int) =
 (*
     14 33 43 60 67 7
 *)
+
+// Record Result type
+type LotterySimResults ={
+    TicketsBought: int
+    Profit: int
+    Loss: int
+}
+
+
 let simulatePowerBall lotteryPick grandprize = 
     let mutable lotteryTickets: int = 0
     let mutable profit: int = 0
     let mutable loss: int = 0
-    let mutable x = 0
     let mutable ammountWon = 0
     let mutable jackpotHit = false
 
@@ -139,15 +147,22 @@ let simulatePowerBall lotteryPick grandprize =
         lotteryTickets <- lotteryTickets + 1
         loss <- loss + 2
         profit <- profit + ammountWon
-        x <- x + 1
-        if (x % 1_000_000) = 0 then 
-            printfn "Number of Draws: %s Net Profit: $%s"(x|>addCommas)((profit-loss)|>addCommas)
+        lotteryTickets <- lotteryTickets + 1
+        if (lotteryTickets % 1_000_000) = 0 then 
+            printfn "Number of Draws: %s Net Profit: $%s"(lotteryTickets|>addCommas)((profit-loss)|>addCommas)
+    {
+        TicketsBought = lotteryTickets
+        Profit = profit
+        Loss = loss
+    }
 
 
-printfn $"Tickets Purchased: {lotteryTickets |>addCommas}"
-printfn $"Profit: ${profit|> addCommas}"
-printfn $"Loss: ${loss|> addCommas}"
-printfn $"Net Profit: ${(profit - loss) |>addCommas}"
+let simResults = simulatePowerBall lotteryPick 10_000_000
+
+printfn $"Tickets Purchased: {simResults.TicketsBought |>addCommas}"
+printfn $"Profit: ${simResults.Profit |> addCommas}"
+printfn $"Loss: ${simResults.Loss |> addCommas}"
+printfn $"Net Profit: ${(simResults.Profit - simResults.Loss) |>addCommas}"
 
 
 (*
