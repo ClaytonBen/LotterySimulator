@@ -118,27 +118,30 @@ let addCommas (num: int) =
 (*
     14 33 43 60 67 7
 *)
+let simulatePowerBall lotteryPick grandprize = 
+    let mutable lotteryTickets: int = 0
+    let mutable profit: int = 0
+    let mutable loss: int = 0
+    let mutable x = 0
+    let mutable ammountWon = 0
+    let mutable jackpotHit = false
 
-let mutable lotteryTickets: int = 0
-let mutable profit: int = 0
-let mutable loss: int = 0
-let mutable x = 0
-let mutable ammountWon = 0
+    let grandprize = 1_000_000_000
 
-let grandprize = 1_000_000_000
-
-// PowerBall hit While not powerball hit do. Set that to true when I hit powerball
-while ammountWon <> grandprize do
-    let drawingResults = drawLottery()
-    let matchingwhiteBalls = findCorrectWhiteBalls lotteryPick drawingResults
-    let matchingpowerBall = checkPowerball lotteryPick drawingResults
-    ammountWon <- scoreLotteryPick matchingwhiteBalls matchingpowerBall grandprize
-    lotteryTickets <- lotteryTickets + 1
-    loss <- loss + 2
-    profit <- profit + ammountWon
-    if (x % 1_000_000) = 0 then 
-        printfn "Number of Draws: %s Net Profit: $%s"(x|>addCommas)((profit-loss)|>addCommas)
-    x <- x + 1
+    // PowerBall hit While not powerball hit do. Set that to true when I hit powerball
+    while jackpotHit = false do
+        let drawingResults = drawLottery()
+        let matchingwhiteBalls = findCorrectWhiteBalls lotteryPick drawingResults
+        let matchingpowerBall = checkPowerball lotteryPick drawingResults
+        ammountWon <- scoreLotteryPick matchingwhiteBalls matchingpowerBall grandprize
+        if ammountWon = grandprize then
+            jackpotHit <- true
+        lotteryTickets <- lotteryTickets + 1
+        loss <- loss + 2
+        profit <- profit + ammountWon
+        x <- x + 1
+        if (x % 1_000_000) = 0 then 
+            printfn "Number of Draws: %s Net Profit: $%s"(x|>addCommas)((profit-loss)|>addCommas)
 
 
 printfn $"Tickets Purchased: {lotteryTickets |>addCommas}"
