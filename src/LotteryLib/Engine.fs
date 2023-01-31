@@ -56,7 +56,7 @@ module Engine =
             )
         |> String.concat ","
     
-    let simulatePowerBall lotteryPick grandprize = 
+    let simulatePowerBall (lotteryPick:LotteryCombination) (grandprize:int) :LotterySimResults = 
         let mutable lotteryTickets: int = 0
         let mutable profit: int = 0
         let mutable loss: int = 0
