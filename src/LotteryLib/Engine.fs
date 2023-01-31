@@ -55,6 +55,33 @@ module Engine =
             |> String.concat ""
             )
         |> String.concat ","
+    
+    let simulatePowerBall lotteryPick grandprize = 
+        let mutable lotteryTickets: int = 0
+        let mutable profit: int = 0
+        let mutable loss: int = 0
+        let mutable ammountWon = 0
+        let mutable jackpotHit = false
+
+        // PowerBall hit While not powerball hit do. Set that to true when I hit powerball
+        while jackpotHit = false do
+            let drawingResults = drawLottery()
+            let matchingwhiteBalls = findCorrectWhiteBalls lotteryPick drawingResults
+            let matchingpowerBall = checkPowerball lotteryPick drawingResults
+            ammountWon <- scoreLotteryPick matchingwhiteBalls matchingpowerBall grandprize
+            if ammountWon = grandprize then
+                jackpotHit <- true
+            lotteryTickets <- lotteryTickets + 1
+            loss <- loss + 2
+            profit <- profit + ammountWon
+            lotteryTickets <- lotteryTickets + 1
+            if (lotteryTickets % 1_000_000) = 0 then 
+                printfn "Number of Draws: %s Net Profit: $%s"(lotteryTickets|>addCommas)((profit-loss)|>addCommas)
+        {
+            TicketsBought = lotteryTickets
+            Profit = profit
+            Loss = loss
+        }
 
     
 

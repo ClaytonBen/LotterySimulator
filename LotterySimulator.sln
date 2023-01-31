@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6EA9324A-3FD
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LotteryLib", "src\LotteryLib\LotteryLib.fsproj", "{3273CA4E-E87C-4647-A693-63D83B920199}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LotteryConsole", "src\LotteryConsole\LotteryConsole.fsproj", "{76E61D21-099B-4304-A5F9-027523FBA301}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +22,13 @@ Global
 		{3273CA4E-E87C-4647-A693-63D83B920199}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3273CA4E-E87C-4647-A693-63D83B920199}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3273CA4E-E87C-4647-A693-63D83B920199}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76E61D21-099B-4304-A5F9-027523FBA301}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76E61D21-099B-4304-A5F9-027523FBA301}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76E61D21-099B-4304-A5F9-027523FBA301}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76E61D21-099B-4304-A5F9-027523FBA301}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3273CA4E-E87C-4647-A693-63D83B920199} = {6EA9324A-3FDD-41E0-958F-C53F5B9921C1}
+		{76E61D21-099B-4304-A5F9-027523FBA301} = {6EA9324A-3FDD-41E0-958F-C53F5B9921C1}
 	EndGlobalSection
 EndGlobal
