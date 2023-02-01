@@ -15,7 +15,6 @@ module Engine =
     let findCorrectWhiteBalls lotteryPick drawingResult  =
         Set.intersect lotteryPick.WhiteBalls drawingResult.WhiteBalls
 
-    // Let lotteryP
     let checkPowerball lotteryPick drawingResult=
         lotteryPick.PowerBall = drawingResult.PowerBall
     
@@ -42,19 +41,24 @@ module Engine =
             PowerBall = Powerball(Random.Shared.Next(1,27))
         }
 
-    let addCommas (num: int) = 
-        let numString = num.ToString()
+    let addCommas (num: int) =
+        let isNegative = num < 0
+        let numString = Math.Abs(num).ToString()
         let reversed = numString.ToCharArray() |> Array.rev
         let chunks = reversed |> Array.chunkBySize 3
-        chunks
-        |> Array.map Array.rev
-        |> Array.rev
-        |> Array.map ( fun x -> 
-            x 
-            |> Array.map string 
-            |> String.concat ""
-            )
-        |> String.concat ","
+        
+        let numberWithCommas =
+            chunks
+            |> Array.map Array.rev
+            |> Array.rev
+            |> Array.map ( fun x -> 
+                x 
+                |> Array.map string 
+                |> String.concat "")
+            |> String.concat ","
+
+        if isNegative then $"-{numberWithCommas}"
+        else numberWithCommas
     
     let simulatePowerBall (lotteryPick:LotteryCombination) (grandprize:int) :LotterySimResults = 
         let mutable lotteryTickets: int = 0
@@ -82,6 +86,3 @@ module Engine =
             Profit = profit
             Loss = loss
         }
-
-    
-

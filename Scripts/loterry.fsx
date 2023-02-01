@@ -102,19 +102,39 @@ let drawLottery() =
 
 // scorePowerBall lotteryPick (drawingPowerballs()) 20_000_000
 
-let addCommas (num: int) = 
-    let numString = num.ToString()
+let addCommas (num: int) =
+    let isNegative = num < 0
+    let numString = Math.Abs(num).ToString()
     let reversed = numString.ToCharArray() |> Array.rev
     let chunks = reversed |> Array.chunkBySize 3
-    chunks
-    |> Array.map Array.rev
-    |> Array.rev
-    |> Array.map ( fun x -> 
-        x 
-        |> Array.map string 
-        |> String.concat "")
-    |> String.concat ","
+    
+    let numberWithCommas =
+        chunks
+        |> Array.map Array.rev
+        |> Array.rev
+        |> Array.map ( fun x -> 
+            x 
+            |> Array.map string 
+            |> String.concat "")
+        |> String.concat ","
 
+    if isNegative then $"-{numberWithCommas}"
+    else numberWithCommas
+    
+addCommas -342_433
+
+let num = 600344
+let numString = num.ToString()
+let reversed = numString.ToCharArray() |> Array.rev
+let chunks = reversed |> Array.chunkBySize 3
+chunks
+|> Array.map Array.rev
+|> Array.rev
+|> Array.map ( fun x -> 
+    x 
+    |> Array.map string 
+    |> String.concat "")
+|> String.concat ","
 (*
     14 33 43 60 67 7
 *)
@@ -170,3 +190,8 @@ printfn $"Net Profit: ${(simResults.Profit - simResults.Loss) |>addCommas}"
     and Counts how many numbers are correct in the
     ball picks.
 *)
+
+let parseWhiteballInputs (str:string) =
+    str.Split(",")
+    |> Set.ofArray
+    |> Set.map (fun x -> x |> int |> WhiteBall)
