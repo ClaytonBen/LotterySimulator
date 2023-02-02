@@ -8,7 +8,6 @@ let parseWhiteballInputs (str:string) =
     |> Set.map (fun x -> x |> int |> WhiteBall)
 
 [<EntryPoint>]
-printfn $"${100000 |>addCommas}"
 Console.Write "\nPick 5 Whiteballs comma seperated (1-69):"
 let whiteballInput = Console.ReadLine()
 Console.Write "\nPick 1 Powerball (1-26):"
