@@ -42,24 +42,8 @@ module Engine =
         }
 
     let addCommas (num: int) =
-        let isNegative = num < 0
-        let numString = Math.Abs(num).ToString()
-        let reversed = numString.ToCharArray() |> Array.rev
-        let chunks = reversed |> Array.chunkBySize 3
-        
-        let numberWithCommas =
-            chunks
-            |> Array.map Array.rev
-            |> Array.rev
-            |> Array.map ( fun x -> 
-                x 
-                |> Array.map string 
-                |> String.concat "")
-            |> String.concat ","
+        $"{num:n0}"
 
-        if isNegative then $"-{numberWithCommas}"
-        else numberWithCommas
-    
     let simulatePowerBall (lotteryPick:LotteryCombination) (grandprize:int) :LotterySimResults = 
         let rec simulate (lotteryTickets:int) (profit:int) (loss:int) =
             let drawingResults = drawLottery()

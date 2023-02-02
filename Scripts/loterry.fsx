@@ -123,6 +123,9 @@ let addCommas (num: int) =
     
 addCommas -342_433
 
+let x = -1000
+let s = $"{x:n0}"
+
 let num = 600344
 let numString = num.ToString()
 let reversed = numString.ToCharArray() |> Array.rev
