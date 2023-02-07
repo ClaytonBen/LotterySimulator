@@ -1,5 +1,5 @@
 (*
-    Simulating:
+    Goal:
     
     How many drawings does it take for me to win the jackpot?
     What is the ROI?
