@@ -2,14 +2,21 @@
     Goal:
     
     How many drawings does it take for me to win the Powerball Jackpot?
-    What is the ROI?
+    What is the Net Profit?
 *)
  
+(*
+    How to Play:
+
+    5 unique White Balls range from (1-69)
+    1 PowerBall ranging from (1-26)
+*)
+
 (* 
     Assumption:
 
     For simplicity sake lets say that we do not
-    take the multiplier into Powerball Multiplier.
+    take the multiplier into account.
 *)
 
 (*
@@ -24,21 +31,20 @@
     Powerball                 = $4
 *)
 
-(*
-    5 unique White Balls range from (1-69)
-    PowerBalls range from (1-26)
-*)
 
 // Sketch out our Domain
 
 type WhiteBall = WhiteBall of int
 type PowerBall = PowerBall of int
 
-[<Struct>]
+
 type LotteryCombination = {
     WhiteBalls: WhiteBall Set
     PowerBall: PowerBall
 }
+
+
+
 
 (*
     Generating random values with the new random functionality.
@@ -49,6 +55,14 @@ open System
 Random.Shared.Next(1,70)
 Random.Shared.Next(1,27)
 
+
+
+
+
+
+
+
+  
 // We want create a function that generates whiteballs
 // Input: n number of balls that are generated.
 // Recursive function that takes 
@@ -61,8 +75,13 @@ let rec generateRandomNumbers n set =
 generateRandomNumbers 5 Set.empty
 
 
+
+
+
+
 // Create a function that takes n as an input
 // Generates n number of balls with
+
 let generateWhiteBalls n =
     let rec generateRandomNumbers n set =
         if set |> Set.count = n then set
@@ -70,6 +89,9 @@ let generateWhiteBalls n =
             generateRandomNumbers n (Set.add (WhiteBall (Random.Shared.Next(1, 70))) set)
     generateRandomNumbers n Set.empty
 
+
+
+generateWhiteBalls 5
 
 // I need to find the lottery balls that are matched
 
@@ -82,6 +104,11 @@ let set2 =
     |> Set.ofList
 
 Set.intersect set1 set2
+
+
+
+
+
 
 // Will this work with types?
 
@@ -96,8 +123,11 @@ let setType2 =
 Set.intersect setType setType2
 
 
+
+
 // Create a function that takes lotteryPick and the Drawing Result
 // Returns the matched balls
+
 
 let checkPowerball (lotteryPick:LotteryCombination) (drawingResult: LotteryCombination) =
     lotteryPick.PowerBall = drawingResult.PowerBall
@@ -118,8 +148,8 @@ let findCorrectWhiteBalls lotteryPick drawingResult  =
 
 // Scoring the lottery Pick
 
-let scoreLotteryPick whiteBalls matchedPowerball grandprize  =
-    let numOfWhiteBalls = whiteBalls |> Set.count
+let scoreLotteryPick matchedWhiteBalls matchedPowerball grandprize  =
+    let numOfWhiteBalls = matchedWhiteBalls |> Set.count
     match (numOfWhiteBalls,matchedPowerball)  with
     | 5,true    -> grandprize
     | 5,false   -> 1_000_000
@@ -143,6 +173,11 @@ let drawLottery() =
 
 let lotteryDrawn = drawLottery()
 
+
+
+
+
+
 // Add Commas for visibility
 let addCommas (num: int) =
     $"{num:n0}"
@@ -152,6 +187,12 @@ addCommas 342_433
 // Will This work on negative numbers
 
 addCommas -342_433
+
+
+
+
+// Simulating the Powerball.
+
 
 type LotterySimResults ={
     TicketsBought: int
@@ -175,9 +216,9 @@ let simulatePowerBall (lotteryPick:LotteryCombination) (grandprize:int) :Lottery
 
         if ammountWon = grandprize then
             {
-                TicketsBought = lotteryTickets
-                Profit = profit
-                Loss = loss
+                TicketsBought = newLotteryTickets
+                Profit = newProfit
+                Loss = newLoss
             }
         else
             simulate (newLotteryTickets) (newProfit) (newLoss)
@@ -186,7 +227,7 @@ let simulatePowerBall (lotteryPick:LotteryCombination) (grandprize:int) :Lottery
 
 // Inputs
 let jackpot = 100_000_000
-
+ 
 let lotteryPick =
     {
         WhiteBalls = Set.ofList [WhiteBall 14; WhiteBall 33; WhiteBall 43; WhiteBall 60; WhiteBall 67]
@@ -201,3 +242,4 @@ printfn $"Tickets Purchased: {simResults.TicketsBought |>addCommas}"
 printfn $"Profit: ${simResults.Profit |> addCommas}"
 printfn $"Loss: ${simResults.Loss |> addCommas}"
 printfn $"Net Profit: ${(simResults.Profit - simResults.Loss) |>addCommas}"
+
